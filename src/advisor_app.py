@@ -230,6 +230,11 @@ def main() -> None:
         [data-testid="stSidebar"] * { color: #f7f4ec; }
         [data-testid="stMetric"] { background: #ffffff; border: 1px solid #dce2df; padding: 1rem; border-radius: .6rem; }
         [data-testid="stMetricLabel"] { color: #52646a; }
+        [data-testid="stMetricValue"], [data-testid="stMetricValue"] * {
+            color: #12363d !important;
+            opacity: 1 !important;
+            font-weight: 700;
+        }
         h1, h2, h3, h4, h5 { color: #173f46; letter-spacing: -.02em; }
         .stButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] { background: #176b64; border-color: #176b64; }
         </style>
