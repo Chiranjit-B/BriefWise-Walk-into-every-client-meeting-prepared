@@ -16,6 +16,7 @@ if __package__ in {None, ""}:
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
 
+from src.analysis import ANALYSIS_RULESET_VERSION
 from src.models import Briefing
 from src.orchestrator import run_review
 from src.presentation import AdvisorReview, build_advisor_review
@@ -36,7 +37,14 @@ def load_draft_review(revision_id: str, store: StateStore) -> tuple[dict[str, An
     """Load one stored revision and adapt it for the meeting-ready presentation."""
     try:
         draft = store.get_draft(revision_id.strip())
+        if draft["ruleset_version"] != ANALYSIS_RULESET_VERSION:
+            raise AdvisorAppError(
+                "This saved review uses an older rule or briefing format. "
+                "Select its client and month, then prepare a new review."
+            )
         briefing = Briefing.model_validate(draft["briefing"])
+    except AdvisorAppError:
+        raise
     except (StateError, ValidationError, KeyError) as exc:
         raise AdvisorAppError(f"Could not open that draft: {exc}") from exc
 
@@ -261,6 +269,7 @@ def main() -> None:
                 st.session_state.active_revision_id = existing_review["revision_id"]
                 st.success("Stored review opened instantly. Turn on fresh review to regenerate it.")
             else:
+                st.session_state.pop("active_revision_id", None)
                 with st.spinner("Retrieving sources, calculating rules, and generating advisor context…"):
                     result = run_review(client_id, month=month, state_store=store)
                 if result.status == "ok" and result.draft_ids:

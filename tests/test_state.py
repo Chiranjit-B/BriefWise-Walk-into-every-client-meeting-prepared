@@ -161,6 +161,7 @@ class StateStoreTests(unittest.TestCase):
             connection.commit()
         finally:
             connection.close()
+        self.assertIsNone(self.store.find_latest_review("C001", "2026-01"))
         with self.assertRaisesRegex(StateError, "obsolete analysis ruleset"):
             self.store.approve(draft["revision_id"], "Advisor One")
 

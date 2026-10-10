@@ -267,15 +267,16 @@ class StateStore:
         return self._draft_record(row)
 
     def find_latest_review(self, client_id: str, analysis_month: str) -> dict | None:
-        """Return the newest reusable pending/approved revision for a client-month."""
+        """Return the newest schema-compatible reusable review for a client-month."""
         with self._connect() as connection:
             row = connection.execute(
                 """
                 SELECT * FROM drafts
-                WHERE client_id=? AND analysis_month=? AND status IN ('pending_review','approved')
+                WHERE client_id=? AND analysis_month=? AND ruleset_version=?
+                  AND status IN ('pending_review','approved')
                 ORDER BY created_at DESC, revision_number DESC LIMIT 1
                 """,
-                (client_id, analysis_month),
+                (client_id, analysis_month, ANALYSIS_RULESET_VERSION),
             ).fetchone()
         return self._draft_record(row) if row is not None else None
 

@@ -1,3 +1,4 @@
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
@@ -105,6 +106,24 @@ class AdvisorPresentationTests(unittest.TestCase):
             store = StateStore(root / "state.sqlite3", root / "outputs")
             with self.assertRaisesRegex(AdvisorAppError, "Could not open that draft"):
                 load_draft_review("draft_missing", store)
+
+    def test_draft_loader_reports_obsolete_saved_review_concisely(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            store = StateStore(root / "state.sqlite3", root / "outputs")
+            store.create_session("run-old-ui", "C001", ["2026-06"])
+            draft = store.create_pending_draft("run-old-ui", evidence_briefing("C001"))
+            connection = sqlite3.connect(root / "state.sqlite3")
+            try:
+                connection.execute(
+                    "UPDATE drafts SET ruleset_version='' WHERE revision_id=?",
+                    (draft["revision_id"],),
+                )
+                connection.commit()
+            finally:
+                connection.close()
+            with self.assertRaisesRegex(AdvisorAppError, "older rule or briefing format"):
+                load_draft_review(draft["revision_id"], store)
 
 
 if __name__ == "__main__":
