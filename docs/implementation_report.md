@@ -21,6 +21,12 @@ Offline presentation tests cover attention-item and evidence mapping, quiet-mont
 
 The completed offline verification run on 2026-10-10 passed all 17 required groups: **72 unit tests passed**, all **150 customer-month analyses** were validated, the June findings matched the independent 25-client fixture, and the independent R1 derivation matched all six months. The Streamlit app also completed its headless render smoke test with zero exceptions, and its local server returned HTTP 200. No Gemini or HubSpot request was made. The automated browser surface was unavailable in the execution environment, so no claim is made about a completed browser-based visual inspection.
 
+### Interactive latency optimization
+
+The Data Fetcher Agent now dispatches its two known required tools directly through the existing validated allowlist instead of asking Gemini to choose them. This preserves the agent boundary, tool validation, HubSpot error handling, logging, and source bundle, while removing one redundant model request and the mandatory pacing gap before Analyzer generation. A fresh single-month review therefore uses one Gemini operation: `analyzer_structured_narrative`. The 512-token Fetcher setting remains accepted for configuration compatibility but is not consumed by the optimized retrieval path.
+
+The workspace also reuses the latest stored pending or approved client-month review by default, opening it without network or model calls. Advisors can explicitly select **Generate a fresh review** when updated source retrieval and a new narrative are required. Rejected reviews are not reused. These optimizations do not cache or alter rule calculations, source evidence, human-review state, or approved memory.
+
 ## Unified verification entry point
 
 `python -m scripts.verify_project` now performs the complete credential-free, network-free verification workflow and writes timestamped JSON and Markdown reports under `outputs/verification/`. It reuses the existing unit tests, June fixture evaluator, all-month evaluator, and independent R1 derivation. Stateful coverage uses temporary SQLite/output paths and checks that the real approval database and approved artifacts retain identical hashes.

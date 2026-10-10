@@ -456,9 +456,9 @@ def _write_reports(*, stamp: str, mode: str, rows: list[CheckRow], settings: Set
             "fetcher_max_output_tokens": settings.gemini_fetcher_max_output_tokens,
             "analyzer_max_output_tokens": settings.gemini_analyzer_max_output_tokens,
             "operation_output_caps": {
-                "data_fetcher_function_call": settings.gemini_fetcher_max_output_tokens,
                 "analyzer_structured_narrative": settings.gemini_analyzer_max_output_tokens,
             },
+            "retrieval_model_calls": 0,
         },
         "status_counts": counts,
         "checks": [asdict(row) for row in rows],
@@ -484,7 +484,7 @@ def _write_reports(*, stamp: str, mode: str, rows: list[CheckRow], settings: Set
         f"- Model: `{settings.gemini_model}`",
         f"- Model calls per review: {settings.gemini_max_calls}; attempts: {settings.gemini_max_attempts}",
         f"- Request pacing: {settings.gemini_requests_per_minute} requests/minute",
-        f"- Output-token caps: fetcher {settings.gemini_fetcher_max_output_tokens}; analyzer {settings.gemini_analyzer_max_output_tokens}",
+        f"- Output-token cap: Analyzer {settings.gemini_analyzer_max_output_tokens}; retrieval uses no model call",
         f"- Usage totals: {details.get('usage_totals', {})}",
         f"- Status counts: {counts}",
         "",
@@ -525,8 +525,8 @@ def main() -> int:
     print(f"Planned live customers: {len(clients) if args.live else 0}")
     print(
         "Effective output caps: "
-        f"data_fetcher_function_call={settings.gemini_fetcher_max_output_tokens}; "
-        f"analyzer_structured_narrative={settings.gemini_analyzer_max_output_tokens}"
+        f"analyzer_structured_narrative={settings.gemini_analyzer_max_output_tokens}; "
+        "data_fetcher=direct_tools_no_model_call"
     )
     print("Running required offline verification (no network calls)...")
     offline_rows, details = run_offline_verification()

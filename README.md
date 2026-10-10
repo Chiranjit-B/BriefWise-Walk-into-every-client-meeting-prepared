@@ -12,7 +12,7 @@ Advisor CLI
     v
 Orchestrator -- validates ID, controls flow, saves pending drafts, handles errors
     |
-    +--> Data Fetcher Agent (Gemini function calling)
+    +--> Data Fetcher Agent (direct allowlisted tool dispatch)
     |       +--> get_financial_data -> local JSON
     |       +--> get_crm_profile    -> live HubSpot API (read only)
     |
@@ -28,7 +28,7 @@ Orchestrator -- validates ID, controls flow, saves pending drafts, handles error
 
 Agents and tools have different jobs:
 
-- The **Data Fetcher Agent** is model-driven. Gemini chooses from an explicit two-tool allowlist. The dispatch layer validates arguments, binds calls to the advisor-requested client ID, and permits at most three tool rounds.
+- The **Data Fetcher Agent** directly invokes the workflow's two required tools through an explicit allowlist. The dispatch layer validates arguments and binds calls to the advisor-requested client ID. Because the required sources are known in advance, retrieval does not spend a model call or wait for Gemini request pacing.
 - The **Analyzer Agent** is model-driven. It calls the deterministic analysis function and asks Gemini to interpret—not recalculate—the resulting metrics and evidence.
 - The **tools** are ordinary, testable Python functions. They read the financial JSON, query HubSpot, and calculate the five rules. Tools do not pretend to be agents.
 - The **orchestrator** owns validation, handoffs, stop/continue decisions, output validation, persistence, and graceful failure handling.
@@ -101,7 +101,7 @@ streamlit run streamlit_app.py
 
 For example, a June review for C010 shows the recorded salary, debits, and cash-flow position, then groups R1, R2, and R5 as attention items. Each item explains what happened, why the existing rule highlighted it, what the CRM may contextualize, what remains unknown, and which evidence references support it. R3 and R4 remain visible as other financial observations rather than disappearing simply because they did not trigger.
 
-The interface does not implement a second analysis engine and does not change R1-R5. It adapts the already validated `Briefing` produced by the orchestrator. Preparing a new review uses the configured Gemini and HubSpot integrations; opening and reviewing a stored draft does not rerun either service. The advisor can approve, reject, or amend permitted narrative fields from the workspace. No timeout, page close, or missing input causes approval.
+The interface does not implement a second analysis engine and does not change R1-R5. It adapts the already validated `Briefing` produced by the orchestrator. By default, **Prepare client review** opens the latest matching pending or approved review immediately when one exists. Turn on **Generate a fresh review** to retrieve current sources and request a new Analyzer narrative. Opening and reviewing a stored draft does not rerun Gemini or HubSpot. The advisor can approve, reject, or amend permitted narrative fields from the workspace. No timeout, page close, or missing input causes approval.
 
 The workspace is a local single-user demonstration. Reviewer labels are audit metadata, not authenticated identities, and it makes no production access-control claim. The CLI workflows below remain available for automation and debugging.
 
@@ -131,7 +131,7 @@ python -m src.main --client-id C001 --all-months
 
 `--month` and `--all-months` are mutually exclusive. Months must use `YYYY-MM` and fall inside the dataset coverage. The CLI prints a run ID, pending draft IDs, and paths. A validated model result is stored as `outputs/draft_<client>_<month>_<run-id>_<draft-id>.json` with status `pending_review`; it is not automatically final or added to memory. An all-month review creates one pending draft per completed month and `outputs/briefing_index_<client>_all-months_<run-id>.json`. The index is updated as individual months are approved, rejected, or superseded. Structured logs are stored as `logs/run_<run-id>.jsonl`.
 
-An all-month review retrieves the customer's financial data and live HubSpot profile once, then reuses that source bundle while calculating each month independently. The configured Gemini call maximum is shared across the entire run and is never reset between months. With the default eight-call limit, six months require at least one fetcher call and six analyzer calls; retries or extra tool rounds can consume the remaining capacity. If the budget or provider quota stops the run, completed drafts and the index are retained, and the index identifies all remaining months.
+An all-month review retrieves the customer's financial data and live HubSpot profile once, then reuses that source bundle while calculating each month independently. Retrieval uses no model request. The configured Gemini call maximum is shared across the entire run and is never reset between months. With the default eight-call limit, six months require six Analyzer calls; retries can consume the remaining capacity. If the budget or provider quota stops the run, completed drafts and the index are retained, and the index identifies all remaining months.
 
 ## Human review checkpoint
 
@@ -224,7 +224,7 @@ Gemini calls default to a 30-second request timeout, at most two application att
 
 The rate limiter is shared by all `GeminiClient` instances in one Python process and is protected against concurrent callers. It cannot coordinate separate CLI processes. Other processes, applications, or API keys associated with the same Google project may also consume provider quota, so this limiter cannot guarantee that every HTTP 429 response will be avoided. For retryable 429 responses, the client honors provider retry guidance when available; otherwise it uses bounded exponential backoff with jitter. A provider-identified daily quota exhaustion stops immediately instead of being retried repeatedly.
 
-Fetcher output is capped at 512 tokens and Analyzer output at 5,000 tokens by default. These are configurable with `GEMINI_FETCHER_MAX_OUTPUT_TOKENS` and `GEMINI_ANALYZER_MAX_OUTPUT_TOKENS`; both must be positive integers. Configuration is read afresh from the project-root `.env` for each `Settings.from_env()` call, with an explicitly supplied process environment variable taking precedence. The connectivity check deliberately retains its tiny five-token cap.
+Analyzer output is capped at 5,000 tokens by default through `GEMINI_ANALYZER_MAX_OUTPUT_TOKENS`. The older `GEMINI_FETCHER_MAX_OUTPUT_TOKENS=512` setting remains accepted for configuration compatibility, but the optimized Data Fetcher no longer makes a model request. Configuration is read afresh from the project-root `.env` for each `Settings.from_env()` call, with an explicitly supplied process environment variable taking precedence. The connectivity check deliberately retains its tiny five-token cap.
 
 Google's current documentation says `gemini-3.8-flash` uses medium thinking by default and supports low, medium, and high thinking levels. This application does not override that model behavior. `max_output_tokens` is a hard cap covering both internal thought tokens and visible response tokens; it does not resize the model's thinking allocation. A low cap can therefore produce `MAX_TOKENS`, truncated, or empty output. The client detects that condition and rejects the result rather than saving an incomplete briefing. See [Gemini thinking and token limits](https://ai.google.dev/gemini-api/docs/thinking).
 

@@ -28,7 +28,6 @@ class FakeFetcher:
 
     def fetch(self, client_id):
         type(self).calls += 1
-        self.model.calls_used += 1
         return DataBundle(
             client_id=client_id,
             financial_status="ok",
@@ -164,7 +163,7 @@ class OrchestratorMonthTests(unittest.TestCase):
         ])
         self.assertEqual(len(result.output_paths), 6)
         self.assertEqual(index["retrieval_count"], 1)
-        self.assertEqual(index["model_calls_used"], 7)
+        self.assertEqual(index["model_calls_used"], 6)
         self.assertEqual(index["results"][0]["status"], "pending_review")
         self.assertEqual(refreshed["results"][0]["status"], "approved")
         self.assertTrue(all(item["status"] == "pending_review" for item in refreshed["results"][1:]))
@@ -178,8 +177,8 @@ class OrchestratorMonthTests(unittest.TestCase):
                 index = json.loads(result.index_path.read_text(encoding="utf-8"))
         self.assertEqual(result.status, "partial")
         self.assertEqual(FakeFetcher.calls, 1)
-        self.assertEqual(result.completed_months, ("2026-01", "2026-02"))
-        self.assertEqual(result.remaining_months, ("2026-03", "2026-04", "2026-05", "2026-06"))
+        self.assertEqual(result.completed_months, ("2026-01", "2026-02", "2026-03"))
+        self.assertEqual(result.remaining_months, ("2026-04", "2026-05", "2026-06"))
         self.assertEqual(index["model_call_limit"], 3)
         self.assertEqual(index["model_calls_used"], 3)
 

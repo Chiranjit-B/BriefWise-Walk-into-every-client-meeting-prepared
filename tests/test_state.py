@@ -141,6 +141,18 @@ class StateStoreTests(unittest.TestCase):
             connection.close()
         self.assertEqual(count, 0)
 
+    def test_latest_review_reuses_pending_or_approved_but_not_rejected(self):
+        pending = self.pending("run-latest", "C001", "2026-01")
+        found = self.store.find_latest_review("C001", "2026-01")
+        self.assertEqual(found["revision_id"], pending["revision_id"])
+        self.store.reject(pending["revision_id"], "Advisor One", "Regenerate this review")
+        self.assertIsNone(self.store.find_latest_review("C001", "2026-01"))
+
+        approved = self.pending("run-latest-approved", "C001", "2026-01")
+        self.store.approve(approved["revision_id"], "Advisor One")
+        found = self.store.find_latest_review("C001", "2026-01")
+        self.assertEqual(found["status"], "approved")
+
     def test_obsolete_ruleset_drafts_and_memory_are_not_reused(self):
         draft = self.pending("run-obsolete")
         connection = sqlite3.connect(self.db_path)

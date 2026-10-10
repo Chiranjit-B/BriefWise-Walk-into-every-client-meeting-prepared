@@ -250,14 +250,24 @@ def main() -> None:
         st.caption("Prepare one evidence-based monthly client review.")
         client_id = st.selectbox("Client", clients)
         month = st.selectbox("Analysis month", list(reversed(months)))
+        fresh_review = st.toggle(
+            "Generate a fresh review",
+            value=False,
+            help="Off opens the latest stored pending or approved review immediately when one exists.",
+        )
         if st.button("Prepare client review", type="primary", width="stretch"):
-            with st.spinner("Retrieving sources, calculating rules, and drafting advisor context…"):
-                result = run_review(client_id, month=month, state_store=store)
-            if result.status == "ok" and result.draft_ids:
-                st.session_state.active_revision_id = result.draft_ids[0]
-                st.success("Draft ready for review.")
+            existing_review = None if fresh_review else store.find_latest_review(client_id, month)
+            if existing_review is not None:
+                st.session_state.active_revision_id = existing_review["revision_id"]
+                st.success("Stored review opened instantly. Turn on fresh review to regenerate it.")
             else:
-                st.error(result.message)
+                with st.spinner("Retrieving sources, calculating rules, and generating advisor context…"):
+                    result = run_review(client_id, month=month, state_store=store)
+                if result.status == "ok" and result.draft_ids:
+                    st.session_state.active_revision_id = result.draft_ids[0]
+                    st.success("Draft ready for review.")
+                else:
+                    st.error(result.message)
         st.divider()
         existing = st.text_input("Open an existing draft ID")
         if st.button("Open draft", width="stretch"):
@@ -265,7 +275,7 @@ def main() -> None:
                 st.session_state.active_revision_id = existing.strip()
             else:
                 st.error("Enter a draft or revision ID.")
-        st.caption("Preparing a new review uses the configured HubSpot and Gemini integrations. Opening or reviewing a stored draft does not rerun them.")
+        st.caption("Stored reviews open without external calls. A fresh review uses HubSpot plus one Gemini Analyzer request.")
 
     st.title("Wealth Advisor Workspace")
     st.write("Turn verified monthly signals into a focused client conversation, then record an explicit human decision.")

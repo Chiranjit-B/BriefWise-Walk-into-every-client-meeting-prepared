@@ -266,6 +266,19 @@ class StateStore:
             raise StateError(f"Draft or revision {revision_id} was not found.")
         return self._draft_record(row)
 
+    def find_latest_review(self, client_id: str, analysis_month: str) -> dict | None:
+        """Return the newest reusable pending/approved revision for a client-month."""
+        with self._connect() as connection:
+            row = connection.execute(
+                """
+                SELECT * FROM drafts
+                WHERE client_id=? AND analysis_month=? AND status IN ('pending_review','approved')
+                ORDER BY created_at DESC, revision_number DESC LIMIT 1
+                """,
+                (client_id, analysis_month),
+            ).fetchone()
+        return self._draft_record(row) if row is not None else None
+
     def _draft_record(self, row: sqlite3.Row) -> dict:
         return {
             "ruleset_version": row["ruleset_version"],

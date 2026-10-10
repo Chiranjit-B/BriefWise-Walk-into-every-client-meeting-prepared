@@ -1,7 +1,4 @@
 import unittest
-from types import SimpleNamespace
-
-from google.genai import types
 
 from src.agents import AgentError, AnalyzerAgent, DataFetcherAgent
 from src.analysis import analyze_financial_data
@@ -13,19 +10,11 @@ from tests.test_gemini_client import RecordingLogger, settings
 
 class FetcherModel:
     def __init__(self):
-        self.types = types
         self.settings = settings()
-        self.configs = []
+        self.calls_used = 0
 
-    def generate(self, *, contents, config, operation):
-        self.configs.append(config)
-        return SimpleNamespace(
-            candidates=[],
-            function_calls=[
-                SimpleNamespace(name="get_financial_data", args={"client_id": "C001"}),
-                SimpleNamespace(name="get_crm_profile", args={"client_id": "C001"}),
-            ],
-        )
+    def generate(self, **_kwargs):
+        raise AssertionError("Data retrieval must not use a model call.")
 
 
 class AnalyzerModel:
@@ -80,7 +69,7 @@ class AgentOutputLimitTests(unittest.TestCase):
         self.assertNotIn("2026-05-15", filtered)
         self.assertEqual(excluded, 1)
 
-    def test_fetcher_applies_its_output_limit(self):
+    def test_fetcher_dispatches_required_tools_without_a_model_call(self):
         model = FetcherModel()
         agent = DataFetcherAgent(model, RecordingLogger())
         agent._tools = {
@@ -89,7 +78,8 @@ class AgentOutputLimitTests(unittest.TestCase):
         }
         bundle = agent.fetch("C001")
         self.assertEqual(bundle.financial_status, "ok")
-        self.assertEqual(model.configs[0].max_output_tokens, 512)
+        self.assertEqual(bundle.crm_status, "not_found")
+        self.assertEqual(model.calls_used, 0)
 
     def test_analyzer_passes_its_output_limit(self):
         financial = get_financial_data("C002")["data"]
