@@ -7,12 +7,12 @@ Date: 2026-10-10 (Asia/Calcutta)
 The project now includes two intentionally focused product features without changing the verified anomaly rules:
 
 1. A meeting-ready presentation layer (`src/presentation.py`) converts a validated `Briefing` into an advisor view containing the monthly financial overview, attention items, rule-specific evidence, uncertainty, other rule observations, CRM limitations, and deduplicated meeting questions. This layer does not recalculate or reclassify a rule.
-2. A local Streamlit workspace (`src/advisor_app.py`) lets an advisor choose a customer and month, prepare a review through the existing orchestrator, open a stored revision without rerunning external services, inspect evidence, and execute the existing approve/reject/amend-and-approve checkpoint. Approval remains explicit and immutable calculated evidence is still enforced by `StateStore`.
+2. A local Streamlit workspace (`src/advisor_app.py`), exposed through the canonical root entrypoint `streamlit_app.py`, lets an advisor choose a customer and month, prepare a review through the existing orchestrator, open a stored revision without rerunning external services, inspect evidence, and execute the existing approve/reject/amend-and-approve checkpoint. Approval remains explicit and immutable calculated evidence is still enforced by `StateStore`.
 
 Run it from the project root with:
 
 ```powershell
-.\.venv\Scripts\streamlit.exe run src/advisor_app.py
+.\.venv\Scripts\streamlit.exe run streamlit_app.py
 ```
 
 The interface preserves the same HubSpot retrieval, Gemini model settings, request pacing, output-token limits, model-call budget, SQLite memory, and audit trail used by the CLI. It is a local single-user demonstration with no authentication or production access-control claim. Transaction descriptions are labeled unverified, CRM context is not treated as authorization evidence, and quiet months explicitly say that no configured rule trigger is not a complete risk assessment.

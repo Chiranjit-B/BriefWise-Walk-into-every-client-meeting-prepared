@@ -96,7 +96,7 @@ GEMINI_ANALYZER_MAX_OUTPUT_TOKENS=5000
 The primary product experience is a local advisor workspace. It prepares a monthly review with the existing orchestrator, then turns the validated briefing into a meeting-ready view: a financial snapshot, items needing attention, supporting evidence, uncertainty, suggested client questions, CRM context, and other non-triggered or unevaluated rule observations.
 
 ```powershell
-streamlit run src/advisor_app.py
+streamlit run streamlit_app.py
 ```
 
 For example, a June review for C010 shows the recorded salary, debits, and cash-flow position, then groups R1, R2, and R5 as attention items. Each item explains what happened, why the existing rule highlighted it, what the CRM may contextualize, what remains unknown, and which evidence references support it. R3 and R4 remain visible as other financial observations rather than disappearing simply because they did not trigger.

@@ -235,7 +235,7 @@ def main() -> None:
         st.caption("Prepare one evidence-based monthly client review.")
         client_id = st.selectbox("Client", clients)
         month = st.selectbox("Analysis month", list(reversed(months)))
-        if st.button("Prepare client review", type="primary", use_container_width=True):
+        if st.button("Prepare client review", type="primary", width="stretch"):
             with st.spinner("Retrieving sources, calculating rules, and drafting advisor context…"):
                 result = run_review(client_id, month=month, state_store=store)
             if result.status == "ok" and result.draft_ids:
@@ -245,7 +245,7 @@ def main() -> None:
                 st.error(result.message)
         st.divider()
         existing = st.text_input("Open an existing draft ID")
-        if st.button("Open draft", use_container_width=True):
+        if st.button("Open draft", width="stretch"):
             if existing.strip():
                 st.session_state.active_revision_id = existing.strip()
             else:
