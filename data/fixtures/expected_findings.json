@@ -1,0 +1,75 @@
+{
+  "schema_version": "3.0",
+  "currency": "USD",
+  "evaluation_month": "2026-06",
+  "agent_input": false,
+  "derivation_note": "Expected revised-R1 values were derived directly from raw transactions with Decimal arithmetic, independently of src.analysis.",
+  "scenario_assignment": {
+    "C022": "expected_furniture_purchase",
+    "C004": "increasing_spending",
+    "C001": "negative_cash_flow",
+    "C025": "suspicious_transfer_burst",
+    "C010": "suspicious_large_transfer"
+  },
+  "expected_monthly_r1": {
+    "2026-01": {"triggered": {}, "not_evaluated": []},
+    "2026-02": {"triggered": {}, "not_evaluated": []},
+    "2026-03": {"triggered": {}, "not_evaluated": []},
+    "2026-04": {"triggered": {}, "not_evaluated": []},
+    "2026-05": {"triggered": {}, "not_evaluated": []},
+    "2026-06": {
+      "triggered": {
+        "C010": {
+          "salary_basis": "14000",
+          "threshold_amount": "7000.0",
+          "transactions": [{"transaction_id": "C010-T0105", "amount": "8000"}]
+        }
+      },
+      "not_evaluated": []
+    }
+  },
+  "clients": [
+    {"client_id": "C001", "expected_triggered_rule_ids": ["R3"]},
+    {"client_id": "C002", "expected_triggered_rule_ids": []},
+    {"client_id": "C003", "expected_triggered_rule_ids": []},
+    {"client_id": "C004", "expected_triggered_rule_ids": ["R2"]},
+    {"client_id": "C005", "expected_triggered_rule_ids": []},
+    {"client_id": "C006", "expected_triggered_rule_ids": []},
+    {"client_id": "C007", "expected_triggered_rule_ids": []},
+    {"client_id": "C008", "expected_triggered_rule_ids": []},
+    {"client_id": "C009", "expected_triggered_rule_ids": []},
+    {
+      "client_id": "C010",
+      "expected_triggered_rule_ids": ["R1", "R2", "R5"],
+      "expected_r1": {
+        "salary_basis": "14000",
+        "threshold_amount": "7000.0",
+        "transactions": [{"transaction_id": "C010-T0105", "amount": "8000"}]
+      }
+    },
+    {"client_id": "C011", "expected_triggered_rule_ids": []},
+    {"client_id": "C012", "expected_triggered_rule_ids": []},
+    {"client_id": "C013", "expected_triggered_rule_ids": []},
+    {"client_id": "C014", "expected_triggered_rule_ids": []},
+    {"client_id": "C015", "expected_triggered_rule_ids": []},
+    {"client_id": "C016", "expected_triggered_rule_ids": []},
+    {"client_id": "C017", "expected_triggered_rule_ids": []},
+    {"client_id": "C018", "expected_triggered_rule_ids": []},
+    {"client_id": "C019", "expected_triggered_rule_ids": []},
+    {"client_id": "C020", "expected_triggered_rule_ids": []},
+    {"client_id": "C021", "expected_triggered_rule_ids": []},
+    {
+      "client_id": "C022",
+      "expected_triggered_rule_ids": ["R2"],
+      "expected_r1": {
+        "salary_basis": "12000",
+        "threshold_amount": "6000.0",
+        "transactions": [],
+        "boundary_note": "The $6,000 furniture debit equals 50% of salary and therefore does not trigger R1."
+      }
+    },
+    {"client_id": "C023", "expected_triggered_rule_ids": []},
+    {"client_id": "C024", "expected_triggered_rule_ids": []},
+    {"client_id": "C025", "expected_triggered_rule_ids": ["R4"]}
+  ]
+}

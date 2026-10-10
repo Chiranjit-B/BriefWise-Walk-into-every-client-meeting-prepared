@@ -1,0 +1,49 @@
+First name,Last name,Email,Client ID,Risk tolerance,Financial goals,Advisor context
+Aariv,Velora,c001@example.com,C001,low,"Emergency savings: $24,444.44 by 2029-12-31","2026-02-11: Reviewed the emergency savings goal (savings target) of $24,444.44 by 2029-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-19: Client would like to review sustained household commitments, budget pressure, and the available savings cushion before adjusting goal contributions."
+Mehira,Talven,c002@example.com,C002,medium,"Education fund: $5,555.56 by 2030-12-31","2026-02-12: Reviewed the education fund goal (savings target) of $5,555.56 by 2030-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-14: Client plans a routine review of utilities and transport costs before the next meeting."
+Nivaan,Keshora,c003@example.com,C003,high,"House deposit: $12,222.22 by 2031-12-31","2026-02-13: Reviewed the house deposit goal (savings target) of $12,222.22 by 2031-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-15: Discuss a manageable contribution schedule alongside everyday household spending."
+Tishara,Devlin,c004@example.com,C004,low,"Emergency savings: $5,555.56 by 2032-12-31","2026-02-14: Reviewed the emergency savings goal (savings target) of $5,555.56 by 2032-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-18: Client requested a review of discretionary spending while preserving contributions toward the existing goal."
+Anvika,Mirel,c006@example.com,C006,high,"Education fund: $27,777.78 by 2029-12-31","2026-02-16: Reviewed the education fund goal (savings target) of $27,777.78 by 2029-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-18: Client would like to compare regular expenses with progress toward the existing goal."
+Kairav,Lunesh,c007@example.com,C007,low,"Retirement savings: $42,222.22 by 2030-12-31","2026-02-17: Reviewed the retirement savings goal (contribution milestone) of $42,222.22 by 2030-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-19: Client plans a routine review of utilities and transport costs before the next meeting."
+Ishira,Varlen,c008@example.com,C008,medium,"House deposit: $28,888.89 by 2031-12-31","2026-02-18: Reviewed the house deposit goal (savings target) of $28,888.89 by 2031-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-20: Discuss a manageable contribution schedule alongside everyday household spending. Client said, ""Please review travel and savings together."""
+Devika,Norvan,c009@example.com,C009,high,"Emergency savings: $7,777.78 by 2032-12-31","2026-02-19: Reviewed the emergency savings goal (savings target) of $7,777.78 by 2032-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-21: Client asked to keep room in the budget for modest planned household purchases."
+Tanveer,Kalora,c010@example.com,C010,low,"Education fund: $24,444.44 by 2028-12-31","2026-02-20: Reviewed the education fund goal (savings target) of $24,444.44 by 2028-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-22: Review the household budget and regular contributions at the next meeting."
+Mira,Ashven,c011@example.com,C011,medium,"Retirement savings: $11,111.11 by 2029-12-31","2026-02-21: Reviewed the retirement savings goal (contribution milestone) of $11,111.11 by 2029-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-23: Client would like to compare regular expenses with progress toward the existing goal."
+Rohan,Delora,c012@example.com,C012,high,"House deposit: $16,666.67 by 2030-12-31","2026-02-22: Reviewed the house deposit goal (savings target) of $16,666.67 by 2030-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-12: Client plans a routine review of utilities and transport costs before the next meeting."
+Avira,Senvik,c013@example.com,C013,low,"Emergency savings: $40,000.00 by 2031-12-31","2026-02-23: Reviewed the emergency savings goal (savings target) of $40,000.00 by 2031-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-13: Discuss a manageable contribution schedule alongside everyday household spending."
+Nishal,Tarven,c014@example.com,C014,medium,"Education fund: $30,000.00 by 2032-12-31","2026-02-24: Reviewed the education fund goal (savings target) of $30,000.00 by 2032-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-14: Client asked to keep room in the budget for modest planned household purchases."
+Kavira,Molesh,c015@example.com,C015,high,"Retirement savings: $11,111.11 by 2028-12-31","2026-02-10: Reviewed the retirement savings goal (contribution milestone) of $11,111.11 by 2028-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-15: Review the household budget and regular contributions at the next meeting."
+Ayaan,Virlen,c016@example.com,C016,low,"House deposit: $24,444.44 by 2029-12-31","2026-02-11: Reviewed the house deposit goal (savings target) of $24,444.44 by 2029-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-16: Client would like to compare regular expenses with progress toward the existing goal."
+Suhira,Navel,c017@example.com,C017,medium,"Emergency savings: $35,555.56 by 2030-12-31","2026-02-12: Reviewed the emergency savings goal (savings target) of $35,555.56 by 2030-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-17: Client plans a routine review of utilities and transport costs before the next meeting."
+Rishav,Kelora,c018@example.com,C018,high,"Education fund: $21,111.11 by 2031-12-31","2026-02-13: Reviewed the education fund goal (savings target) of $21,111.11 by 2031-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-18: Discuss a manageable contribution schedule alongside everyday household spending."
+Levira,Tanshel,c019@example.com,C019,low,"Retirement savings: $41,111.11 by 2032-12-31","2026-02-14: Reviewed the retirement savings goal (contribution milestone) of $41,111.11 by 2032-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-19: Client asked to keep room in the budget for modest planned household purchases."
+Arvin,Sorela,c020@example.com,C020,medium,"House deposit: $41,111.11 by 2028-12-31","2026-02-15: Reviewed the house deposit goal (savings target) of $41,111.11 by 2028-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-20: Review the household budget and regular contributions at the next meeting."
+Saanvi,Melvik,c021@example.com,C021,high,"Emergency savings: $11,111.11 by 2029-12-31","2026-02-16: Reviewed the emergency savings goal (savings target) of $11,111.11 by 2029-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-21: Client would like to compare regular expenses with progress toward the existing goal."
+Pravin,Lorash,c022@example.com,C022,low,"Education fund: $15,555.56 by 2030-12-31","2026-02-17: Reviewed the education fund goal (savings target) of $15,555.56 by 2030-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-15: Client expects an approximately $6,000 furniture purchase in June for the apartment. Review how the planned purchase fits alongside regular goal contributions."
+Navira,Kelven,c023@example.com,C023,medium,"Retirement savings: $6,666.67 by 2031-12-31","2026-02-18: Reviewed the retirement savings goal (contribution milestone) of $6,666.67 by 2031-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-23: Discuss a manageable contribution schedule alongside everyday household spending."
+Yuvin,Dalora,c024@example.com,C024,high,"House deposit: $35,555.56 by 2032-12-31","2026-02-19: Reviewed the house deposit goal (savings target) of $35,555.56 by 2032-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-12: Client asked to keep room in the budget for modest planned household purchases."
+Anira,Veshan,c025@example.com,C025,low,"Emergency savings: $22,222.22 by 2028-12-31","2026-02-20: Reviewed the emergency savings goal (savings target) of $22,222.22 by 2028-12-31. Account cash is not assumed to be entirely allocated to this goal.
+2026-05-13: Review the household budget and regular contributions at the next meeting."
