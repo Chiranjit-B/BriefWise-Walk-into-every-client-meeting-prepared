@@ -2,9 +2,19 @@
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
 from typing import Any
 
 from pydantic import ValidationError
+
+# Streamlit executes a file entrypoint with that file's directory on sys.path.
+# Keep the documented root entrypoint, but also support the legacy/direct command
+# `streamlit run src/advisor_app.py` by making the project package importable.
+if __package__ in {None, ""}:
+    project_root = str(Path(__file__).resolve().parent.parent)
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
 
 from src.models import Briefing
 from src.orchestrator import run_review
