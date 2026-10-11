@@ -211,12 +211,11 @@ The June evaluator checks all 25 clients against the revised evaluation-only fix
 
 ## Model configuration
 
-The default is `gemini-3.8-flash`, selected because Google's current model catalog describes it as a stable Flash model for agentic and enterprise workflows. It supports the two capabilities used here: function calling and structured outputs. Override it without code changes by setting `GEMINI_MODEL`.
+The default is `gemini-3.8-flash`, selected because Google's current model catalog describes it as a stable Flash model for agentic and enterprise workflows. The Analyzer uses the model's structured-output capability. Override the model without code changes by setting `GEMINI_MODEL`.
 
-The implementation uses the official `google-genai` SDK. Function calling follows Google's client-side tool flow, and final briefings use JSON Schema structured output plus independent Pydantic validation. Relevant official references:
+The implementation uses the official `google-genai` SDK for the connectivity check and Analyzer request. The Data Fetcher does not ask Gemini to select tools: it directly dispatches the two required, allowlisted retrieval tools because both sources are mandatory for every review. The Analyzer receives deterministic evidence and returns the narrative portion through JSON Schema structured output plus independent Pydantic validation. Relevant official references:
 
 - [Gemini models](https://ai.google.dev/gemini-api/docs/models)
-- [Function calling](https://ai.google.dev/gemini-api/docs/function-calling)
 - [Structured outputs](https://ai.google.dev/gemini-api/docs/structured-output)
 - [Google Gen AI Python SDK](https://googleapis.github.io/python-genai/)
 
@@ -260,7 +259,8 @@ Internal Analyzer instructions treat transaction descriptions and CRM notes stri
 - HubSpot is a current profile, not a historical snapshot. For a historical analysis month, clearly dated notes after that month are excluded from interpretation. Undated notes may be retained but are identified as current context; the system does not invent historical goals or risk tolerance.
 - The configured rules are demonstration rules, not a complete risk or fraud system. “No configured rules triggered” does not mean “no financial risk.”
 - CRM notes may contextualize a transaction (for example, C022's planned furniture purchase) but do not prove authorization or remove cash-flow impact.
-- Deterministic Python performs all monetary calculations. The model is reserved for tool selection and evidence interpretation, improving auditability at the cost of a less flexible detector.
+- Deterministic Python performs all monetary calculations, while Gemini is reserved for structured evidence interpretation. This improves auditability at the cost of a less flexible detector.
+- The two mandatory data sources are dispatched directly through an allowlisted tool interface instead of spending a model call on predictable tool selection. This reduces latency and quota usage, while intentionally favoring a fixed retrieval workflow over dynamic source routing.
 - SQLite persistence is a local single-user demonstration. It has no login, authentication, role enforcement, encryption layer, multi-user locking policy beyond SQLite transactions, or production access-control claims.
 - Reviewer labels identify audit entries only; they do not prove who operated the CLI.
 - The memory layer is compact structured retrieval, not RAG, embeddings, a vector database, or general conversational memory.
