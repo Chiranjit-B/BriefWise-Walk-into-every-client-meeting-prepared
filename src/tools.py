@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 import json
 import os
 import re
@@ -15,6 +16,7 @@ from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 FINANCIAL_DATA_PATH = PROJECT_ROOT / "data" / "financial_data.json"
+CRM_DISPLAY_DATA_PATH = PROJECT_ROOT / "data" / "crm_import" / "hubspot_contacts_updated.csv"
 load_dotenv(PROJECT_ROOT / ".env")
 
 CLIENT_ID_PATTERN = re.compile(r"^C\d{3}$")
@@ -83,6 +85,26 @@ def get_financial_client_ids() -> list[str]:
         return sorted(client["client_id"] for client in clients)
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError("Could not read financial dataset clients.") from exc
+
+
+def get_client_display_names() -> dict[str, str]:
+    """Return local mock CRM names keyed by client ID for UI display only."""
+    client_ids = get_financial_client_ids()
+    labels = {client_id: "Name unavailable (CRM profile missing)" for client_id in client_ids}
+    try:
+        with CRM_DISPLAY_DATA_PATH.open(encoding="utf-8", newline="") as file:
+            for row in csv.DictReader(file):
+                client_id = normalize_client_id(row.get("Client ID"))
+                if client_id not in labels:
+                    continue
+                full_name = " ".join(
+                    part.strip() for part in (row.get("First name") or "", row.get("Last name") or "") if part.strip()
+                )
+                if full_name:
+                    labels[client_id] = full_name
+    except (OSError, csv.Error, ValueError, TypeError) as exc:
+        raise ValueError("Could not read client display names from the local CRM fixture.") from exc
+    return labels
 
 
 def get_financial_data(client_id: str) -> dict:

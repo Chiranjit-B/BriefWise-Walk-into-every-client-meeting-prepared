@@ -12,6 +12,12 @@ class FinancialToolTests(unittest.TestCase):
     def test_client_catalog_contains_the_expected_25_clients(self):
         self.assertEqual(tools.get_financial_client_ids(), [f"C{number:03d}" for number in range(1, 26)])
 
+    def test_client_display_names_use_mock_crm_names_and_missing_profile_fallback(self):
+        names = tools.get_client_display_names()
+        self.assertEqual(names["C001"], "Aariv Velora")
+        self.assertEqual(names["C005"], "Name unavailable (CRM profile missing)")
+        self.assertEqual(set(names), {f"C{number:03d}" for number in range(1, 26)})
+
     def test_duplicate_client_ids_return_error(self):
         record = {
             "client_id": "C001", "currency": "USD", "monthly_income": 1,

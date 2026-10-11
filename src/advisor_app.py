@@ -21,7 +21,12 @@ from src.models import Briefing
 from src.orchestrator import run_review
 from src.presentation import AdvisorReview, build_advisor_review
 from src.state import StateError, StateStore
-from src.tools import get_financial_client_ids, get_financial_data, get_financial_dataset_months
+from src.tools import (
+    get_client_display_names,
+    get_financial_client_ids,
+    get_financial_data,
+    get_financial_dataset_months,
+)
 
 
 IDENTITY_NOTICE = (
@@ -251,12 +256,13 @@ def main() -> None:
     )
     store = StateStore()
     clients = get_financial_client_ids()
+    client_names = get_client_display_names()
     months = get_financial_dataset_months()
 
     with st.sidebar:
         st.markdown("## Review setup")
         st.caption("Prepare one evidence-based monthly client review.")
-        client_id = st.selectbox("Client", clients)
+        client_id = st.selectbox("Client", clients, format_func=client_names.__getitem__)
         month = st.selectbox("Analysis month", list(reversed(months)))
         fresh_review = st.toggle(
             "Generate a fresh review",
